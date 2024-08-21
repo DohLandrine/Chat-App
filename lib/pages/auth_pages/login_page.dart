@@ -1,6 +1,8 @@
 import 'package:chatify/pages/auth_pages/auth_constants.dart';
+import 'package:chatify/provider/auth_provider.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -11,6 +13,7 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   final _formKey = GlobalKey<FormState>();
+  late AuthProvider _auth;
   String _password = '';
   String _email = '';
   bool _obscure = true;
@@ -18,33 +21,40 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: _loginPage(),
+      body: ChangeNotifierProvider<AuthProvider>.value(
+        value: AuthProvider.instance,
+        child: _loginPage(),
+      ),
     );
   }
 
   Widget _loginPage() {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
-      alignment: Alignment.center,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          welcomeText(),
-          formWidget(),
-          const SizedBox(height: 15),
-          Center(
-            child: buttonWidget(),
-          ),
-          const SizedBox(height: 10),
-          Align(
-            alignment: Alignment.center,
-            child: richTextWidget(),
-          ),
-        ],
-      ),
-    );
+    return Builder(builder: (context) {
+      _auth = Provider.of<AuthProvider>(context);
+      //print(_auth.user);
+      return Container(
+        padding: const EdgeInsets.symmetric(horizontal: 20),
+        alignment: Alignment.center,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            welcomeText(),
+            formWidget(),
+            const SizedBox(height: 15),
+            Center(
+              child: buttonWidget(),
+            ),
+            const SizedBox(height: 10),
+            Align(
+              alignment: Alignment.center,
+              child: richTextWidget(),
+            ),
+          ],
+        ),
+      );
+    });
   }
 
   Center welcomeText() {
@@ -95,9 +105,8 @@ class _LoginPageState extends State<LoginPage> {
           borderSide: const BorderSide(color: Colors.black)),
       onPressed: () {
         if (_formKey.currentState!.validate()) {
-         // print('validated');
-        }//katy perry roar//alors on danse stromae
-        //print('not validated');
+          // print('validated');
+        } //katy perry roar//alors on danse stromae
       },
       color: const Color.fromARGB(255, 178, 214, 244),
       child: const Text('Log In'),
@@ -112,7 +121,8 @@ class _LoginPageState extends State<LoginPage> {
           const SizedBox(height: 15),
           TextFormField(
             onChanged: (value) => _email = value,
-            validator: (value) => value != '' || value!.contains('@') ? null : 'Enter an email',
+            validator: (value) =>
+                value != '' || value!.contains('@') ? null : 'Enter an email',
             keyboardType: TextInputType.emailAddress,
             decoration: decoration.copyWith(
               label: const Text('Email'),
