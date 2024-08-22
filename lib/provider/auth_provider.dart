@@ -25,6 +25,7 @@ class AuthProvider extends ChangeNotifier {
     try {
       UserCredential result = await _auth.signInWithEmailAndPassword(email: email, password: password);
       user = result.user;
+      print(user);
       status = AuthStatus.authenticated;
     } catch (e) {
       //do something

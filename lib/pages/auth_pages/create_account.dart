@@ -1,18 +1,18 @@
-import 'package:chatify/pages/auth_pages/auth_constants.dart';
-import 'package:chatify/pages/auth_pages/create_account.dart';
-import 'package:chatify/provider/auth_provider.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class LoginPage extends StatefulWidget {
-  const LoginPage({super.key});
+import '../../provider/auth_provider.dart';
+import 'auth_constants.dart';
+
+class CreateAccount extends StatefulWidget {
+  const CreateAccount({super.key});
 
   @override
-  State<LoginPage> createState() => _LoginPageState();
+  State<CreateAccount> createState() => _CreateAccountState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _CreateAccountState extends State<CreateAccount> {
   final _formKey = GlobalKey<FormState>();
   late AuthProvider _auth;
   String _password = '';
@@ -28,7 +28,6 @@ class _LoginPageState extends State<LoginPage> {
       ),
     );
   }
-
   Widget _loginPage() {
     return Builder(builder: (context) {
       _auth = Provider.of<AuthProvider>(context);
@@ -42,65 +41,19 @@ class _LoginPageState extends State<LoginPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             welcomeText(),
-            const SizedBox(height: 10),
             formWidget(),
+            const SizedBox(height: 30),
             Align(
-                alignment: Alignment.bottomRight,
-                child: forgotPassword()),
-            Center(
-              child: buttonWidget(),
-            ),
+              alignment: Alignment.bottomRight,
+                child: buttonWidget()),
             const SizedBox(height: 10),
-            Align(
-              alignment: Alignment.center,
-              child: richTextWidget(),
-            ),
+            richTextWidget()
+
           ],
         ),
       );
     });
   }
-
-  Center welcomeText() {
-    return const Center(
-      child: Text(
-        'Welcome back to Chatify',
-        style: TextStyle(
-          fontSize: 25,
-          fontWeight: FontWeight.w400,
-        ),
-      ),
-    );
-  }
-
-  Widget richTextWidget() {
-    return RichText(
-      text: TextSpan(
-        text: "Not a user?,",
-        style: const TextStyle(
-          color: Colors.black,
-          //fontWeight: FontWeight.w400,
-        ),
-        children: [
-          TextSpan(
-            text: ' Create Account',
-            style: const TextStyle(
-                color: Color.fromARGB(255, 74, 49, 173),
-                fontWeight: FontWeight.w500),
-            recognizer: TapGestureRecognizer()
-              ..onTap = () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) =>
-                            const CreateAccount()));
-              },
-          ),
-        ],
-      ),
-    );
-  }
-
   Widget buttonWidget() {
     return MaterialButton(
       elevation: 0,
@@ -113,13 +66,41 @@ class _LoginPageState extends State<LoginPage> {
         } //katy perry roar//alors on danse stromae
       },
       color: const Color.fromARGB(255, 178, 214, 244),
-      child: const Text('Log In'),
+      child: const Text('Create account'),
     );
   }
-  Widget forgotPassword(){
-    return TextButton(
-      onPressed: (){},
-      child: Text('Forgot Password?'),
+  Center welcomeText() {
+    return const Center(
+      child: Text(
+        'Welcome to Chatify',
+        style: TextStyle(
+          fontSize: 25,
+          fontWeight: FontWeight.w400,
+        ),
+      ),
+    );
+  }
+  Widget richTextWidget() {
+    return RichText(
+      text: TextSpan(
+        text: "Already a user?,",
+        style: const TextStyle(
+          color: Colors.black,
+          //fontWeight: FontWeight.w400,
+        ),
+        children: [
+          TextSpan(
+            text: ' Sign In',
+            style: const TextStyle(
+                color: Color.fromARGB(255, 74, 49, 173),
+                fontWeight: FontWeight.w500),
+            recognizer: TapGestureRecognizer()
+              ..onTap = () {
+                Navigator.pop(context);
+            }
+          ),
+        ],
+      ),
     );
   }
 
@@ -128,17 +109,27 @@ class _LoginPageState extends State<LoginPage> {
       key: _formKey,
       child: Column(
         children: [
-          const SizedBox(height: 25),
+          const SizedBox(height: 15),
           TextFormField(
             onChanged: (value) => _email = value,
             validator: (value) =>
-                value != '' || value!.contains('@') ? null : 'Enter an email',
+            value != '' || value!.contains('@') ? null : 'Enter an email',
+            keyboardType: TextInputType.emailAddress,
+            decoration: decoration.copyWith(
+              label: const Text('Full Name'),
+            ),
+          ),
+          const SizedBox(height: 20),
+          TextFormField(
+            onChanged: (value) => _email = value,
+            validator: (value) =>
+            value != '' || value!.contains('@') ? null : 'Enter an email',
             keyboardType: TextInputType.emailAddress,
             decoration: decoration.copyWith(
               label: const Text('Email'),
             ),
           ),
-          const SizedBox(height: 25),
+          const SizedBox(height: 20),
           TextFormField(
             onChanged: (value) => _password = value,
             validator: (value) => value!.length < 6 || value.length > 20
@@ -151,7 +142,7 @@ class _LoginPageState extends State<LoginPage> {
               suffixIcon: IconButton(
                 onPressed: () {
                   setState(
-                    () {
+                        () {
                       _obscure = !_obscure;
                     },
                   );
